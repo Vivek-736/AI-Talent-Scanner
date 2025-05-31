@@ -33,13 +33,3 @@ This extended version of the [AI Voice Interview Practice](https://github.com/Vi
 This project builds upon:  
 👉 **[AI Voice Interview Practice Website](https://github.com/Vivek-736/AI-Voice-Interview)**  
 (*Designed for job seekers to practice real-time interviews with AI.*)
-
----
-
-## 🛠️ How to Run Locally
-
-```bash
-git clone https://github.com/Vivek-736/AI-Talent-Scanner
-cd AI-Talent-Scanner
-npm install
-npm run dev
