@@ -143,19 +143,19 @@ export default function HomePage() {
             </motion.div>
 
             <motion.div 
-              className="relative hidden lg:block"
+              className="relative hidden lg:block border border-black"
               variants={fadeIn}
               initial={{ opacity: 0, scale: 0.8 }}
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
             >
-              <div className="aspect-square bg-gradient-to-br from-gray-100 to-gray-200 rounded-3xl flex items-center justify-center">
+              <div className="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 rounded-3xl flex items-center justify-center">
                 <Image
-                  src="/vercel.svg"
+                  src="/hero.gif"
                   alt="Hero Image"
                   width={600}
                   height={600}
-                  className="object-cover"
+                  className="object-cover w-full h-full"
                 />
               </div>
             </motion.div>
