@@ -1,5 +1,4 @@
 'use client';
-
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
@@ -71,11 +70,8 @@ export default function HomePage() {
               </div>
             </div>
             <div className="flex items-center space-x-3">
-              <Button variant="ghost" size="sm" className="text-black cursor-pointer rounded-full hover:text-purple-600 hover:bg-purple-50">
-                Sign In
-              </Button>
               <Button size="sm" className="bg-black text-white cursor-pointer rounded-full hover:bg-purple-600 transition-colors">
-                Sign Up
+                Log In
               </Button>
             </div>
           </div>
@@ -149,7 +145,7 @@ export default function HomePage() {
               animate={{ opacity: 1, scale: 1 }}
               transition={{ duration: 0.8, ease: "easeOut" }}
             >
-              <div className="aspect-video bg-gradient-to-br from-gray-100 to-gray-200 rounded-3xl flex items-center justify-center">
+              <div className="aspect-video flex items-center justify-center">
                 <Image
                   src="/hero.gif"
                   alt="Hero Image"
