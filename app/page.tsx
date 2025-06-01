@@ -1,4 +1,5 @@
 'use client';
+
 /* eslint-disable @typescript-eslint/no-unused-vars */
 import { useEffect, useRef } from "react"
 import { Button } from "@/components/ui/button"
@@ -152,6 +153,7 @@ export default function HomePage() {
                   width={600}
                   height={600}
                   className="object-cover w-full h-full"
+                  unoptimized
                 />
               </div>
             </motion.div>
