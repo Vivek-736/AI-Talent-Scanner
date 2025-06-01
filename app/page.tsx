@@ -70,7 +70,7 @@ export default function HomePage() {
               </div>
             </div>
             <div className="flex items-center space-x-3">
-              <Button size="sm" className="bg-black text-white cursor-pointer rounded-full hover:bg-purple-600 transition-colors">
+              <Button size="sm" className="bg-black text-white cursor-pointer rounded-lg hover:bg-purple-600 transition-colors">
                 Log In
               </Button>
             </div>

@@ -6,7 +6,7 @@ import { FcGoogle } from 'react-icons/fc'
 const AuthPage = () => {
     return (
         <div className='flex flex-col items-center justify-center min-h-screen'>
-            <div className='flex flex-col items-center p-8 md:border-2 md:border-purple-600 md:rounded-xl'>
+            <div className='flex flex-col items-center p-8 md:border-2 md:border-gray-200 md:rounded-xl'>
                 <div className='flex flex-row gap-4 items-center mb-4'>
                     <Image
                         src={"/favicon.png"}
