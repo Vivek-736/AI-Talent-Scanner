@@ -1,15 +1,15 @@
 import React from 'react'
-import { SidebarProvider } from '@/components/ui/sidebar'
-import { AppSidebar } from '@/components/AppSidebar'
+import DashboardProvider from './Provider'
 
 const DashboardLayout = ({ children }: { children: React.ReactNode }) => {
     return (
-        <SidebarProvider>
-            <AppSidebar />
-            <div>
-                {children}
-            </div>
-        </SidebarProvider>
+        <div className='bg-gray-200'>
+            <DashboardProvider>
+                <div className='p-10'>
+                    {children}
+                </div>
+            </DashboardProvider>
+        </div>
     )
 }
 

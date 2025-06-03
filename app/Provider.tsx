@@ -1,58 +1,88 @@
 "use client";
 
 import React, { useContext, useEffect, useState } from "react";
-import { supabase } from "@/services/supabaseClient"
+import { supabase } from "@/services/supabaseClient";
 import { UserDetailContext } from "@/context/UserDetailContext";
-/* eslint-disable @typescript-eslint/no-unused-vars */
+
+interface User {
+  id?: number;
+  name: string;
+  email: string;
+  picture: string;
+  credits?: number;
+  created_at?: string;
+}
 
 function Provider({ children }: { children: React.ReactNode }) {
-    const [user, setUser] = useState();
+  const [user, setUser] = useState<User | null>(null);
 
-    useEffect(() => {
-        CreateNewUser();
-    }, []);
+  useEffect(() => {
+    CreateNewUser();
+  }, []);
 
-    const CreateNewUser = () => {
-        supabase.auth.getUser().then(async ({ data: { user } }) => {
-            const { data: Users, error } = await supabase
-                .from('Users')
-                .select('*')
-                .eq('email', user?.email)
-            
-            console.log(Users)
+  const CreateNewUser = async () => {
+    try {
+      const { data: authUser, error: authError } = await supabase.auth.getUser();
+      if (authError || !authUser?.user) {
+        console.error("Error fetching auth user:", authError);
+        return;
+      }
 
-            if(Users?.length == 0) {
-                const { data, error } = await supabase.from('Users')
-                .insert([
-                    {
-                        name: user?.user_metadata?.name,
-                        email: user?.email,
-                        picture: user?.user_metadata?.picture
-                    }
-                ])
-                console.log(data)
+      const { data: users, error: fetchError } = await supabase
+        .from("Users")
+        .select("*")
+        .eq("email", authUser.user.email);
 
-                // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-                // @ts-ignore
-                setUser(data);
-                return;
-            }
-            setUser(Users?.[0]);
-        })
+      if (fetchError) {
+        console.error("Error fetching user from Users table:", fetchError);
+        return;
+      }
+
+      console.log("Fetched users:", users);
+
+      if (users?.length === 0) {
+        const { data: newUser, error: insertError } = await supabase
+          .from("Users")
+          .insert([
+            {
+              name: authUser.user.user_metadata?.name || "Unknown",
+              email: authUser.user.email,
+              picture: authUser.user.user_metadata?.picture || "",
+            },
+          ])
+          .select()
+          .single();
+
+        if (insertError) {
+          console.error("Error inserting new user:", insertError);
+          return;
+        }
+
+        console.log("Inserted new user:", newUser);
+        setUser(newUser);
+        return;
+      }
+
+      setUser(users[0]);
+    } catch (error) {
+      console.error("Unexpected error in CreateNewUser:", error);
     }
+  };
 
-    return (
-        <UserDetailContext.Provider value={{ user, setUser }}>
-            <div>
-                {children}
-            </div>
-        </UserDetailContext.Provider>
-    )
+  return (
+    <UserDetailContext.Provider value={{ user, setUser }}>
+      <div>{children}</div>
+    </UserDetailContext.Provider>
+  );
 }
 
 export default Provider;
 
 export const useUser = () => {
-    const context = useContext(UserDetailContext);
-    return context;
-}
+  const context = useContext(UserDetailContext);
+  if (!context) {
+    throw new Error("useUser must be used within a Provider");
+  }
+  
+  return context;
+};
