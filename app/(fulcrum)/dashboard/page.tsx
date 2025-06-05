@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useUser } from "@/app/Provider";
 import CreateOptions from "@/components/CreateOptions";
 import Welcome from "@/components/Welcome";
+import Interviews from "@/components/Interviews";
 
 const DashboardPage = () => {
   const { user } = useUser();
@@ -20,6 +21,7 @@ const DashboardPage = () => {
       <Welcome />
       <h2 className="text-2xl font-bold ml-2 my-3 mt-6">Dashboard</h2>
       <CreateOptions />
+      <Interviews />
     </div>
   );
 };
