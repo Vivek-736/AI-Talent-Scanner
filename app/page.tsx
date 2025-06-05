@@ -1,20 +1,23 @@
 "use client";
 
-import { useRef } from "react";
+import { useRef, useState, useEffect } from "react";
+import { useRouter } from "next/navigation";
 import Link from "next/link";
+import Image from "next/image";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent } from "@/components/ui/card";
 import {
-  Mic,
-  Users,
-  Clock,
-  BarChart3,
-  CheckCircle,
-  ArrowRight,
-} from "lucide-react";
+  Dialog,
+  DialogContent,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+import { Mic, Users, Clock, BarChart3, CheckCircle } from "lucide-react";
 import { motion, useScroll, useSpring } from "framer-motion";
-import Image from "next/image";
 import { useUser } from "@/app/Provider";
+import { FcGoogle } from "react-icons/fc";
+import { supabase } from "@/services/supabaseClient";
 
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
@@ -22,14 +25,37 @@ export default function HomePage() {
   const containerRef = useRef(null);
   const { scrollY } = useScroll({ container: containerRef });
   const y = useSpring(scrollY, { stiffness: 100, damping: 20 });
-
+  const [isDialogOpen, setIsDialogOpen] = useState(false);
+  const router = useRouter();
   const { user } = useUser();
   const isAuthenticated = !!user?.name;
+
+  useEffect(() => {
+    const { data: authListener } = supabase.auth.onAuthStateChange((event) => {
+      if (event === "SIGNED_IN") {
+        setIsDialogOpen(false);
+        router.push("/dashboard");
+      }
+    });
+
+    return () => {
+      authListener.subscription.unsubscribe();
+    };
+  }, [router]);
 
   const scrollToSection = (id: string) => {
     const element = document.getElementById(id);
     if (element) {
       element.scrollIntoView({ behavior: "smooth", block: "start" });
+    }
+  };
+
+  const signInWithGoogle = async () => {
+    const { error } = await supabase.auth.signInWithOAuth({
+      provider: "google",
+    });
+    if (error) {
+      console.log("Error: ", error.message);
     }
   };
 
@@ -88,14 +114,62 @@ export default function HomePage() {
               </div>
             </div>
             <div className="flex items-center space-x-3">
-              <Link href={isAuthenticated ? "/dashboard" : "/auth"}>
-                <Button
-                  size="sm"
-                  className="bg-purple-600 cursor-pointer text-white rounded-lg hover:bg-purple-700 transition-all shadow-md hover:shadow-lg"
-                >
-                  {isAuthenticated ? "Dashboard" : "Log In"}
-                </Button>
-              </Link>
+              {isAuthenticated ? (
+                <Link href="/dashboard">
+                  <Button
+                    size="sm"
+                    className="bg-purple-600 cursor-pointer text-white rounded-lg hover:bg-purple-700 transition-all shadow-md hover:shadow-lg"
+                  >
+                    Dashboard
+                  </Button>
+                </Link>
+              ) : (
+                <Dialog open={isDialogOpen} onOpenChange={setIsDialogOpen}>
+                  <DialogTrigger asChild>
+                    <Button
+                      size="sm"
+                      className="bg-purple-600 cursor-pointer text-white rounded-lg hover:bg-purple-700 transition-all shadow-md hover:shadow-lg"
+                    >
+                      Log In
+                    </Button>
+                  </DialogTrigger>
+                  <DialogContent className="sm:max-w-[425px]">
+                    <DialogHeader>
+                      <DialogTitle className="text-center">
+                        <div className="flex flex-row gap-4 items-center justify-center mb-4">
+                          <Image
+                            src="/favicon.png"
+                            width={50}
+                            height={50}
+                            alt="Logo"
+                            className="rounded-2xl bg-[#333333]"
+                          />
+                          <span className="text-4xl font-bold text-purple-500">Talq</span>
+                        </div>
+                      </DialogTitle>
+                    </DialogHeader>
+                    <div className="flex flex-col items-center">
+                      <Image
+                        src="/auth.jpg"
+                        width={400}
+                        height={400}
+                        alt="Auth"
+                        className="rounded-2xl"
+                      />
+                      <h2 className="text-2xl font-bold text-center mt-5">Welcome to Talq</h2>
+                      <p className="text-gray-500 text-center">Sign In with your Google Account</p>
+                      <Button
+                        className="mt-7 w-52 cursor-pointer"
+                        onClick={signInWithGoogle}
+                        variant="default"
+                      >
+                        <FcGoogle size={30} className="mr-2" />
+                        <span>Sign In with Google</span>
+                      </Button>
+                    </div>
+                  </DialogContent>
+                </Dialog>
+              )}
             </div>
           </div>
         </div>
@@ -106,7 +180,7 @@ export default function HomePage() {
         className="pt-32 pb-20 px-6 md:px-12 bg-gradient-to-r from-purple-50/50 to-white"
         variants={fadeIn}
       >
-        <div className="max-w-7xl mx-auto mt-8">
+        <div className="max-w-7xl mx-auto mt-12">
           <div className="grid lg:grid-cols-2 gap-12 items-center justify-center">
             <motion.div
               className="space-y-8"
@@ -129,30 +203,6 @@ export default function HomePage() {
                   evaluate candidates fairly, saving you time and delivering
                   actionable insights.
                 </p>
-              </motion.div>
-
-              <motion.div
-                className="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start"
-                variants={fadeIn}
-              >
-                <Link href="/dashboard">
-                  <Button
-                    size="lg"
-                    className="bg-purple-600 cursor-pointer text-white hover:bg-purple-700 transition-all shadow-md hover:shadow-lg"
-                  >
-                    Get Started
-                    <ArrowRight className="w-5 h-5 ml-2" />
-                  </Button>
-                </Link>
-                <Link href="/dashboard">
-                  <Button
-                    variant="outline"
-                    size="lg"
-                    className="border-purple-600 md:flex hidden cursor-pointer text-purple-600 hover:bg-purple-600 hover:text-white transition-all"
-                  >
-                    Sign In
-                  </Button>
-                </Link>
               </motion.div>
             </motion.div>
 
