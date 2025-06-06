@@ -4,6 +4,7 @@ import React, { useState } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { Progress } from '@/components/ui/progress';
+import Form from '@/components/Form';
 
 const CreateInterviewPage = () => {
     const router = useRouter();
@@ -16,6 +17,7 @@ const CreateInterviewPage = () => {
                 <h2 className='font-bold text-2xl'>Create New Interview</h2>
             </div>
             <Progress value={step * 33.33} className='my-5' />
+            <Form />
         </div>
     )
 }
