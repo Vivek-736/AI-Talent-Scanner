@@ -34,9 +34,11 @@ export function AppSidebar() {
                 Talq
             </span>
         </div>
-        <Button className="w-full mt-6 cursor-pointer bg-gradient-to-t from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700">
+        <Link href={'/dashboard/create-interview'}>
+          <Button className="w-full mt-6 cursor-pointer bg-gradient-to-t from-purple-500 to-purple-600 hover:from-purple-600 hover:to-purple-700">
             <Plus /> Create a New Interview
-        </Button>
+          </Button>
+        </Link>
       </SidebarHeader>
       <SidebarContent>
         <SidebarGroup>
