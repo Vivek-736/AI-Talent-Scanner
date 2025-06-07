@@ -1,6 +1,5 @@
 'use client';
-
-import React, { useState } from 'react'
+import React, { useState, useEffect } from 'react'
 import { ArrowLeft } from 'lucide-react'
 import { useRouter } from 'next/navigation'
 import { Progress } from '@/components/ui/progress';
@@ -8,7 +7,20 @@ import Form from '@/components/Form';
 
 const CreateInterviewPage = () => {
     const router = useRouter();
-    const [step, useStep] = useState(1);
+    const [step, setStep] = useState(1);
+    const [formData, setFormData] = useState({});
+
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    const onHandleInputChange = (field: any, value: any) => {
+        setFormData((prev) => ({
+            ...prev,
+            [field]: value
+        }))
+    }
+
+    useEffect(() => {
+        console.log("FormData:", formData);
+    }, [formData]);
 
     return (
         <div>
@@ -17,7 +29,7 @@ const CreateInterviewPage = () => {
                 <h2 className='font-bold text-2xl'>Create New Interview</h2>
             </div>
             <Progress value={step * 33.33} className='my-5' />
-            <Form />
+            <Form onHandleInputChange={onHandleInputChange} />
         </div>
     )
 }
