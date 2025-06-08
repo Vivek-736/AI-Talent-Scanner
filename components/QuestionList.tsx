@@ -4,7 +4,7 @@ import axios from 'axios';
 import { Loader2Icon } from 'lucide-react';
 import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
-
+import { Button } from './ui/button';
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 interface QuestionListProps {
@@ -45,6 +45,10 @@ const QuestionList = ({ formData }: QuestionListProps) => {
         }
     };
 
+    const onFinish = () => {
+
+    }
+
     return (
         <div>
             {loading && 
@@ -56,6 +60,7 @@ const QuestionList = ({ formData }: QuestionListProps) => {
                 </div>
             </div>}
             {questionList?.length > 0 && <div>
+                <h2 className='font-bold text-lg mb-5 text-center'>Generated Interview Questions</h2>
                 <div className='p-5 bg-purple-50 border-purple-200 border-2 rounded-xl'>
                     {questionList.map((item: any, index) => (
                         <div 
@@ -67,6 +72,11 @@ const QuestionList = ({ formData }: QuestionListProps) => {
                         </div>
                     ))}
                 </div>
+            </div>}
+            {!loading && <div className='mt-5 flex justify-end'>
+                <Button onClick={onFinish}>
+                    Finish
+                </Button>
             </div>}
         </div>
     );
