@@ -2,8 +2,9 @@
 
 import axios from 'axios';
 import { Loader2Icon } from 'lucide-react';
-import React, { useEffect, useState } from 'react'
+import React, { useEffect, useState } from 'react';
 import { toast } from 'sonner';
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 interface QuestionListProps {
@@ -15,7 +16,7 @@ const QuestionList = ({ formData }: QuestionListProps) => {
     const [questionList, setQuestionList] = useState([]);
 
     useEffect(() => {
-        if(formData) {
+        if (formData) {
             GenerateQuestionList();
         }
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -28,16 +29,21 @@ const QuestionList = ({ formData }: QuestionListProps) => {
                 ...formData
             });
             const content = result?.data?.content;
-            console.log(content);
-            const FINAL_JSON = content.replace('', '')
-            setQuestionList(JSON.parse(FINAL_JSON)?.interviewQuestions);
+            if (typeof content !== 'string' || !content) {
+                throw new Error('Invalid or missing content in API response');
+            }
+            const cleanedContent = content
+                .replace(/```json\n|```/g, '')
+                .replace(/\n/g, '')
+                .trim();
+            setQuestionList(JSON.parse(cleanedContent)?.interviewQuestions || []);
         } catch (error) {
             toast('Server error, try again');
-            console.log(error);
+            console.error(error);
         } finally {
             setLoading(false);
         }
-    }
+    };
 
     return (
         <div>
@@ -63,7 +69,7 @@ const QuestionList = ({ formData }: QuestionListProps) => {
                 </div>
             </div>}
         </div>
-    )
-}
+    );
+};
 
-export default QuestionList
+export default QuestionList;
