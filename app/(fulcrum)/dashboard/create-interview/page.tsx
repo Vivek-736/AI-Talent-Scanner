@@ -7,6 +7,7 @@ import { Progress } from '@/components/ui/progress';
 import Form from '@/components/Form';
 import QuestionList from '@/components/QuestionList';
 import { toast } from 'sonner';
+import InterviewsLink from '@/components/InterviewsLink';
 
 const CreateInterviewPage = () => {
     const router = useRouter();
@@ -41,7 +42,8 @@ const CreateInterviewPage = () => {
             </div>
             <Progress value={step * 33.33} className='my-5' />
             {step == 1 ? <Form onHandleInputChange={onHandleInputChange} GoToNext={() => onGoToNext()} />
-            :step == 2 ? <QuestionList formData={formData} /> : null}
+            :step == 2 ? <QuestionList formData={formData} />
+            :step == 3 ? <InterviewsLink /> : null}
         </div>
     )
 }
