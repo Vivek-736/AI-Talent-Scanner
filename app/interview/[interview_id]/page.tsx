@@ -7,6 +7,9 @@ import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button';
 import { useParams } from 'next/navigation';
 import { supabase } from '@/services/supabaseClient';
+import { toast } from 'sonner';
+
+/* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 
 type InterviewData = {
@@ -19,6 +22,8 @@ type InterviewData = {
 const InterviewPage = () => {
     const { interview_id } = useParams();
     const [interviewData, setInterviewData] = useState<InterviewData | undefined>();
+    const [username, setUsername] = useState('');
+    const [loading, setLoading] = useState(false);
 
     useEffect(() => {
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -27,14 +32,24 @@ const InterviewPage = () => {
     }, [interview_id]);
 
     const GetInterviewDetails = async () => {
-        const { data: Interviews } = await supabase
-            .from('Interviews')
-            .select('rolePosition, roleDescription, interviewDuration, type')
-            .eq('interview_id', interview_id);
-
-        // @ts-ignore
-        setInterviewData(Interviews?.[0]);
-        console.log(Interviews?.[0]);
+        setLoading(true);
+        try {
+            const { data: Interviews } = await supabase
+                .from('Interviews')
+                .select('rolePosition, roleDescription, interviewDuration, type')
+                .eq('interview_id', interview_id);
+            if (!Interviews || Interviews.length === 0) {
+                toast('Invalid Interview link');
+            }
+            // @ts-ignore
+            setInterviewData(Interviews?.[0]);
+            console.log(Interviews?.[0]);
+        } catch (error) {
+            console.error("Error fetching interview details:", error);
+            toast('Invalid Interview link');
+        } finally {
+            setLoading(false);
+        }
     }
 
     return (
@@ -77,6 +92,7 @@ const InterviewPage = () => {
                             <Input 
                                 placeholder='E.g. 2300044444 or Ashraf Galib Shaik' 
                                 className='w-full border-gray-300 focus:border-purple-600 focus:ring-purple-600 rounded-md py-3'
+                                onChange={(e: any) => setUsername(e.target.value)}
                             />
                         </div>
                         <div className='p-3 bg-purple-100 flex gap-4 rounded-lg'>
@@ -90,7 +106,7 @@ const InterviewPage = () => {
                                 </ul>
                             </div>
                         </div>
-                        <Button className='cursor-pointer bg-gradient-to-t mt-5 font-bold text-white w-full from-purple-700 to-purple-800 hover:from-purple-900 hover:to-purple-950'>
+                        <Button disabled={loading || username?.length < 7} className='cursor-pointer bg-gradient-to-t mt-5 font-bold text-white w-full from-purple-700 to-purple-800 hover:from-purple-900 hover:to-purple-950'>
                             <Video className='font-bold' /> Join Interview
                         </Button>
                     </div>
