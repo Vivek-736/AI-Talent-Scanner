@@ -43,7 +43,7 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
                 ?.replace(/```json\n|```/g, '')
                 ?.replace(/\n/g, '')
                 ?.trim();
-            setQuestionList(JSON.parse(cleanedContent)?.interviewQuestions || []);
+            setQuestionList(JSON?.parse(cleanedContent)?.interviewQuestions || []);
         } catch (error) {
             toast('Server error, try again');
             console.error(error);
@@ -74,19 +74,23 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
         <div>
             {loading && 
             <div className='p-5 bg-purple-100 rounded-xl border-2 border-purple-600 flex gap-5 items-center'>
-                <Loader2Icon className='animate-spin' />
-                <div>
-                    <h2 className='font-medium'>Generating Interview Questions</h2>
-                    <p className='text-purple-600'>Our AI is crafting personalized questions based on your role position</p>
-                </div>
+            <Loader2Icon className='animate-spin' />
+            <div>
+                <h2 className='font-medium'>Generating Interview Questions</h2>
+                <p className='text-purple-600'>Our AI is crafting personalized questions based on your role position</p>
+            </div>
             </div>}
             {questionList?.length > 0 && <div>
-                <QuestionListContainer questionList={questionList} />
+            <QuestionListContainer questionList={questionList} />
             </div>}
             {!loading && <div className='mt-5 flex justify-end'>
-                <Button onClick={onFinish} className='cursor-pointer bg-gradient-to-t from-purple-500 to-purple-600 hover:bg-purple-700 text-white'>
-                    Finish
-                </Button>
+            <Button
+                onClick={onFinish}
+                className={`bg-gradient-to-t from-purple-500 to-purple-600 hover:bg-purple-700 text-white ${loading ? 'cursor-progress' : 'cursor-pointer'}`}
+                disabled={loading}
+            >
+                Finish
+            </Button>
             </div>}
         </div>
     );
