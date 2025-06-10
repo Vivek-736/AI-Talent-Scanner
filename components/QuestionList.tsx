@@ -13,9 +13,10 @@ import { v4 as uuidv4 } from 'uuid';
 
 interface QuestionListProps {
     formData: any;
+    onCreateLink: (interviewId: string, questionListLength: number) => void;
 }
 
-const QuestionList = ({ formData }: QuestionListProps) => {
+const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
     const [loading, setLoading] = useState(true);
     const [questionList, setQuestionList] = useState([]);
     const { user } = useUser();
@@ -33,14 +34,15 @@ const QuestionList = ({ formData }: QuestionListProps) => {
             const result = await axios.post('/api/ai-model', {
                 ...formData
             });
+            console.log('API Response:', result?.data);
             const content = result?.data?.content;
             if (!content || typeof content !== 'string') {
                 console.log('Invalid or missing content in API response');
             }
             const cleanedContent = content
-                .replace(/```json\n|```/g, '')
-                .replace(/\n/g, '')
-                .trim();
+                ?.replace(/```json\n|```/g, '')
+                ?.replace(/\n/g, '')
+                ?.trim();
             setQuestionList(JSON.parse(cleanedContent)?.interviewQuestions || []);
         } catch (error) {
             toast('Server error, try again');
@@ -64,6 +66,8 @@ const QuestionList = ({ formData }: QuestionListProps) => {
             ])
             .select();
         console.log(data, error);
+
+        onCreateLink(interview_id, questionList.length);
     }
 
     return (
