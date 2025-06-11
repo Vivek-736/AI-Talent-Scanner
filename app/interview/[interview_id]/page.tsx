@@ -1,15 +1,17 @@
 'use client';
 
-import React, { useEffect, useState } from 'react'
+import React, { useContext, useEffect, useState } from 'react'
 import Image from 'next/image'
 import { Clock, Info, Video } from 'lucide-react'
 import { Input } from '@/components/ui/input'
 import { Button } from '@/components/ui/button';
-import { useParams } from 'next/navigation';
+import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '@/services/supabaseClient';
 import { toast } from 'sonner';
+import { InterviewDataContext } from '@/context/InterviewDataContext';
 
 /* eslint-disable @typescript-eslint/no-explicit-any */
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
 
 type InterviewData = {
@@ -24,6 +26,9 @@ const InterviewPage = () => {
     const [interviewData, setInterviewData] = useState<InterviewData | undefined>();
     const [username, setUsername] = useState('');
     const [loading, setLoading] = useState(false);
+    // @ts-ignore
+    const {interviewInfo, setInterviewInfo} = useContext(InterviewDataContext);
+    const router = useRouter();
 
     useEffect(() => {
         // eslint-disable-next-line @typescript-eslint/no-unused-expressions
@@ -50,6 +55,17 @@ const InterviewPage = () => {
         } finally {
             setLoading(false);
         }
+    }
+
+    const onJoinInterview = async () => {
+        const { data: Interviews } = await supabase
+            .from('Interviews')
+            .select('*')
+            .eq('interview_id', interview_id)
+        
+        console.log(Interviews?.[0]);
+        setInterviewInfo(Interviews?.[0]);
+        router.push(`/interview/${interview_id}/start`);
     }
 
     return (
@@ -106,7 +122,7 @@ const InterviewPage = () => {
                                 </ul>
                             </div>
                         </div>
-                        <Button disabled={loading || username?.length < 7} className='cursor-pointer bg-gradient-to-t mt-5 font-bold text-white w-full from-purple-700 to-purple-800 hover:from-purple-900 hover:to-purple-950'>
+                        <Button disabled={loading || !username} className='cursor-pointer bg-gradient-to-t mt-5 font-bold text-white w-full from-purple-700 to-purple-800 hover:from-purple-900 hover:to-purple-950' onClick={() => onJoinInterview()}>
                             <Video className='font-bold' /> Join Interview
                         </Button>
                     </div>
