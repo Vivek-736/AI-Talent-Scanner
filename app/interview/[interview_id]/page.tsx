@@ -9,7 +9,6 @@ import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '@/services/supabaseClient';
 import { toast } from 'sonner';
 import { InterviewDataContext } from '@/context/InterviewDataContext';
-
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
@@ -48,7 +47,7 @@ const InterviewPage = () => {
             }
             // @ts-ignore
             setInterviewData(Interviews?.[0]);
-            console.log(Interviews?.[0]);
+            // console.log(Interviews?.[0]);
         } catch (error) {
             console.error("Error fetching interview details:", error);
             toast('Invalid Interview link');
@@ -58,14 +57,19 @@ const InterviewPage = () => {
     }
 
     const onJoinInterview = async () => {
+        setLoading(true);
         const { data: Interviews } = await supabase
             .from('Interviews')
             .select('*')
             .eq('interview_id', interview_id)
         
-        console.log(Interviews?.[0]);
-        setInterviewInfo(Interviews?.[0]);
+        // console.log(Interviews?.[0]);
+        setInterviewInfo({
+            username: username,
+            interviewData: Interviews?.[0]
+        });
         router.push(`/interview/${interview_id}/start`);
+        setLoading(false);
     }
 
     return (
