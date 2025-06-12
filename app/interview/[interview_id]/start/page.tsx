@@ -1,12 +1,12 @@
 "use client";
 
-import React, { useContext, useEffect } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import { InterviewDataContext } from "@/context/InterviewDataContext";
 import Image from "next/image";
 import { Mic, Phone, Timer } from "lucide-react";
 import Vapi from "@vapi-ai/web";
 import AlertConfirmation from "@/components/AlertConfirmation";
-
+import { toast } from "sonner";
 /* eslint-disable @typescript-eslint/no-unused-vars */
 
 interface InterviewInfo {
@@ -28,6 +28,7 @@ const StartInterviewPage = () => {
     InterviewDataContext
   ) as InterviewDataContextType;
   const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY as string);
+  const [activeUser, setActiveUser] = useState(false);
 
   useEffect(() => {
     if (interviewInfo) {
@@ -98,6 +99,23 @@ const StartInterviewPage = () => {
     vapi.stop();
   };
 
+  vapi.on('call-start', () => {
+    console.log('Call has started...');
+    toast('Interview connected...');
+  });
+  vapi.on('speech-start', () => {
+    console.log('Assistant speech has started');
+    setActiveUser(false);
+  });
+  vapi.on('speech-end', () => {
+    console.log('Assistant speech has ended');
+    setActiveUser(true);
+  });
+  vapi.on('call-end', () => {
+    console.log('Call has ended...');
+    toast('Interview ended...');
+  });
+
   return (
     <div className="p-20 pb-0">
       <h2 className="font-bold text-xl flex justify-between">
@@ -109,19 +127,25 @@ const StartInterviewPage = () => {
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-7 mt-10">
         <div className="bg-slate-100 h-[400px] rounded-lg border flex flex-col gap-3 items-center justify-center">
-          <Image
-            src="/ai.png"
-            alt="AI Image"
-            width={90}
-            height={90}
-            className="w-[90px] h-[90px] rounded-full border-sky-600 border-2"
-          />
+          <div className="relative">
+            {!activeUser && <span className="absolute inset-0 rounded-full bg-cyan-400 opacity-75 animate-ping" />}
+            <Image
+              src="/ai.png"
+              alt="AI Image"
+              width={90}
+              height={90}
+              className="w-[90px] h-[90px] rounded-full border-sky-600 border-2"
+            />
+          </div>
           <p className="font-medium text-2xl">AI Agent</p>
         </div>
         <div className="bg-slate-100 h-[400px] rounded-lg border flex flex-col gap-3 items-center justify-center">
-          <h3 className="text-2xl bg-purple-600 text-white p-4 px-6 rounded-full">
-            {interviewInfo?.username?.[0] ?? ""}
-          </h3>
+          <div className="relative">
+            {activeUser && <span className="absolute inset-0 rounded-full bg-purple-400 opacity-75 animate-ping" />}
+            <h3 className="text-2xl bg-purple-600 text-white p-4 px-6 rounded-full">
+              {interviewInfo?.username?.[0] ?? ""}
+            </h3>
+          </div>
           <p className="font-medium text-2xl">
             {interviewInfo?.username ?? "User"}
           </p>
