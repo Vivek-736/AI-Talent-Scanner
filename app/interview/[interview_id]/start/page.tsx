@@ -89,6 +89,7 @@ const StartInterviewPage = () => {
       },
     };
     // console.log(questionList);
+    
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     vapi.start(assistantOptions);
