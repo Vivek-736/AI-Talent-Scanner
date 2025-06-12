@@ -5,16 +5,18 @@ import { InterviewDataContext } from "@/context/InterviewDataContext";
 import Image from "next/image";
 import { Mic, Phone, Timer } from "lucide-react";
 import Vapi from "@vapi-ai/web";
+import AlertConfirmation from "@/components/AlertConfirmation";
+
+/* eslint-disable @typescript-eslint/no-unused-vars */
 
 interface InterviewInfo {
   username: string;
   interviewData: {
     questionList: { question: string }[];
     rolePosition: string;
+    interview_id: string;
   };
 }
-
-/* eslint-disable @typescript-eslint/no-unused-vars */
 
 interface InterviewDataContextType {
   interviewInfo: InterviewInfo | null;
@@ -22,8 +24,6 @@ interface InterviewDataContextType {
 }
 
 const StartInterviewPage = () => {
-  // eslint-disable-next-line @typescript-eslint/ban-ts-comment
-  //@ts-ignore
   const { interviewInfo, setInterviewInfo } = useContext(
     InterviewDataContext
   ) as InterviewDataContextType;
@@ -88,11 +88,14 @@ const StartInterviewPage = () => {
         ],
       },
     };
-    // console.log(questionList);
     
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     vapi.start(assistantOptions);
+  };
+
+  const stopInterview = () => {
+    vapi.stop();
   };
 
   return (
@@ -126,7 +129,12 @@ const StartInterviewPage = () => {
       </div>
       <div className="flex justify-center items-center gap-10 mt-10">
         <Mic className="h-12 w-12 p-3 bg-gray-800 text-white rounded-full cursor-pointer" />
-        <Phone className="h-12 w-12 p-3 text-white bg-rose-600 rounded-full cursor-pointer" />
+        <AlertConfirmation
+          stopInterview={stopInterview}
+          interviewId={interviewInfo?.interviewData?.interview_id ?? ""}
+        >
+          <Phone className="h-12 w-12 p-3 text-white bg-rose-600 hover:bg-rose-800 rounded-full cursor-pointer" />
+        </AlertConfirmation>
       </div>
     </div>
   );
