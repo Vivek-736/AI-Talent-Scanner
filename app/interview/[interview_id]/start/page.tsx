@@ -3,7 +3,7 @@
 import React, { useContext, useEffect, useState } from "react";
 import { InterviewDataContext } from "@/context/InterviewDataContext";
 import Image from "next/image";
-import { Mic, Phone, Timer } from "lucide-react";
+import { Mic, Phone } from "lucide-react";
 import Vapi from "@vapi-ai/web";
 import AlertConfirmation from "@/components/AlertConfirmation";
 import { toast } from "sonner";
@@ -95,10 +95,6 @@ const StartInterviewPage = () => {
     vapi.start(assistantOptions);
   };
 
-  const stopInterview = () => {
-    vapi.stop();
-  };
-
   vapi.on('call-start', () => {
     console.log('Call has started...');
     toast('Interview connected...');
@@ -116,14 +112,14 @@ const StartInterviewPage = () => {
     toast('Interview ended...');
   });
 
+  vapi.on('message', (message) => {
+    console.log('New message:', message);
+  });
+
   return (
     <div className="p-20 pb-0">
-      <h2 className="font-bold text-xl flex justify-between">
+      <h2 className="font-bold text-xl flex items-center justify-center">
         Interview Session
-        <span className="flex gap-2 items-center">
-          <Timer />
-          00:00:00
-        </span>
       </h2>
       <div className="grid grid-cols-1 md:grid-cols-2 gap-7 mt-10">
         <div className="bg-slate-100 h-[400px] rounded-lg border flex flex-col gap-3 items-center justify-center">
@@ -154,7 +150,7 @@ const StartInterviewPage = () => {
       <div className="flex justify-center items-center gap-10 mt-10">
         <Mic className="h-12 w-12 p-3 bg-gray-800 text-white rounded-full cursor-pointer" />
         <AlertConfirmation
-          stopInterview={stopInterview}
+          stopInterview={() => vapi.stop()}
           interviewId={interviewInfo?.interviewData?.interview_id ?? ""}
         >
           <Phone className="h-12 w-12 p-3 text-white bg-rose-600 hover:bg-rose-800 rounded-full cursor-pointer" />

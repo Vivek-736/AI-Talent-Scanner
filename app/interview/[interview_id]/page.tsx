@@ -9,6 +9,7 @@ import { useParams, useRouter } from 'next/navigation';
 import { supabase } from '@/services/supabaseClient';
 import { toast } from 'sonner';
 import { InterviewDataContext } from '@/context/InterviewDataContext';
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 /* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/ban-ts-comment */
@@ -24,6 +25,7 @@ const InterviewPage = () => {
     const { interview_id } = useParams();
     const [interviewData, setInterviewData] = useState<InterviewData | undefined>();
     const [username, setUsername] = useState('');
+    const [email, setEmail] = useState('');
     const [loading, setLoading] = useState(false);
     // @ts-ignore
     const {interviewInfo, setInterviewInfo} = useContext(InterviewDataContext);
@@ -66,6 +68,7 @@ const InterviewPage = () => {
         // console.log(Interviews?.[0]);
         setInterviewInfo({
             username: username,
+            email: email,
             interviewData: Interviews?.[0]
         });
         router.push(`/interview/${interview_id}/start`);
@@ -87,9 +90,6 @@ const InterviewPage = () => {
                         Talq
                     </span>
                 </div>
-                <h2 className='mt-6 font-semibold text-xl sm:text-2xl text-gray-800'>
-                    AI Powered Interview
-                </h2>
                 <div className='flex flex-col md:flex-row mt-10 w-full gap-8 justify-center'>
                     <Image
                         src={"/interview.jpg"}
@@ -113,6 +113,16 @@ const InterviewPage = () => {
                                 placeholder='E.g. 2300044444 or Ashraf Galib Shaik' 
                                 className='w-full border-gray-300 focus:border-purple-600 focus:ring-purple-600 rounded-md py-3'
                                 onChange={(e: any) => setUsername(e.target.value)}
+                            />
+                        </div>
+                        <div className='w-full space-y-2'>
+                            <h2 className='text-gray-700 font-medium'>
+                                Enter your Email:
+                            </h2>
+                            <Input 
+                                placeholder='E.g. example@example.com' 
+                                className='w-full border-gray-300 focus:border-purple-600 focus:ring-purple-600 rounded-md py-3'
+                                onChange={(e: any) => setEmail(e.target.value)}
                             />
                         </div>
                         <div className='p-3 bg-purple-100 flex gap-4 rounded-lg'>
