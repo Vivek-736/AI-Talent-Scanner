@@ -8,10 +8,11 @@ import {
   DialogHeader,
   DialogTitle,
   DialogTrigger,
-} from "@/components/ui/dialog";
-import React, { useState } from "react";
-import { Button } from "./ui/button";
-import { useRouter } from "next/navigation";
+} from '@/components/ui/dialog';
+import React, { useState } from 'react';
+import { Button } from './ui/button';
+import { useRouter } from 'next/navigation';
+import { useVapi } from '@/context/VapiContext';
 
 interface AlertConfirmationProps {
   children: React.ReactNode;
@@ -19,14 +20,44 @@ interface AlertConfirmationProps {
   interviewId: string;
 }
 
-const AlertConfirmation = ({ children, stopInterview, interviewId }: AlertConfirmationProps) => {
+const AlertConfirmation = ({
+  children,
+  stopInterview,
+  interviewId,
+}: AlertConfirmationProps) => {
   const [open, setOpen] = useState(false);
   const router = useRouter();
+  const vapi = useVapi();
+  const [isCallStopping, setIsCallStopping] = useState(false);
 
-  const handleContinue = () => {
-    stopInterview();
-    setOpen(false);
-    router.push(`/interview/${interviewId}`);
+  const handleContinue = async () => {
+    if (isCallStopping) return;
+
+    setIsCallStopping(true);
+
+    try {
+      stopInterview();
+
+      await new Promise<void>((resolve) => {
+        const onCallEnd = () => {
+          vapi.removeListener('call-end', onCallEnd);
+          resolve();
+        };
+        vapi.on('call-end', onCallEnd);
+
+        setTimeout(() => {
+          vapi.removeListener('call-end', onCallEnd);
+          resolve();
+        }, 3000);
+      });
+
+      setOpen(false);
+      router.push(`/interview/${interviewId}`);
+    } catch (error) {
+      console.error('Failed to stop interview:', error);
+      setIsCallStopping(false);
+      setOpen(false);
+    }
   };
 
   return (
@@ -34,9 +65,9 @@ const AlertConfirmation = ({ children, stopInterview, interviewId }: AlertConfir
       <DialogTrigger asChild>{children}</DialogTrigger>
       <DialogContent>
         <DialogHeader>
-          <DialogTitle>Are you absolutely sure?</DialogTitle>
+          <DialogTitle>Are you sure you want to end this?</DialogTitle>
           <DialogDescription>
-            This action cannot be undone, your interview will be ended.
+            This action cannot be undone. Your interview will be ended.
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
@@ -44,11 +75,16 @@ const AlertConfirmation = ({ children, stopInterview, interviewId }: AlertConfir
             variant="destructive"
             className="cursor-pointer"
             onClick={() => setOpen(false)}
+            disabled={isCallStopping}
           >
             Cancel
           </Button>
-          <Button className="cursor-pointer" onClick={handleContinue}>
-            Continue
+          <Button
+            className="cursor-pointer"
+            onClick={handleContinue}
+            disabled={isCallStopping}
+          >
+            {isCallStopping ? 'Stopping...' : 'Continue'}
           </Button>
         </DialogFooter>
       </DialogContent>

@@ -1,13 +1,14 @@
-"use client";
+'use client';
 
-import React, { useContext, useEffect, useState } from "react";
-import { InterviewDataContext } from "@/context/InterviewDataContext";
-import Image from "next/image";
-import { Mic, Phone } from "lucide-react";
-import Vapi from "@vapi-ai/web";
-import AlertConfirmation from "@/components/AlertConfirmation";
-import { toast } from "sonner";
-/* eslint-disable @typescript-eslint/no-unused-vars */
+import React, { useContext, useEffect, useState } from 'react';
+import { InterviewDataContext } from '@/context/InterviewDataContext';
+import Image from 'next/image';
+import { Mic, Phone } from 'lucide-react';
+import AlertConfirmation from '@/components/AlertConfirmation';
+import { toast } from 'sonner';
+import { useVapi } from '@/context/VapiContext';
+
+/* eslint-disable @typescript-eslint/ban-ts-comment */
 
 interface InterviewInfo {
   username: string;
@@ -24,16 +25,42 @@ interface InterviewDataContextType {
 }
 
 const StartInterviewPage = () => {
+  
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   const { interviewInfo, setInterviewInfo } = useContext(
     InterviewDataContext
   ) as InterviewDataContextType;
-  const vapi = new Vapi(process.env.NEXT_PUBLIC_VAPI_PUBLIC_KEY as string);
+  const vapi = useVapi();
   const [activeUser, setActiveUser] = useState(false);
 
   useEffect(() => {
     if (interviewInfo) {
       startCall();
     }
+
+    vapi.on('call-start', () => {
+      console.log('Call has started...');
+      toast('Interview connected...');
+    });
+    vapi.on('speech-start', () => {
+      console.log('Assistant speech has started');
+      setActiveUser(false);
+    });
+    vapi.on('speech-end', () => {
+      console.log('Assistant speech has ended');
+      setActiveUser(true);
+    });
+    vapi.on('call-end', () => {
+      console.log('Call has ended...');
+      toast('Interview ended...');
+    });
+    vapi.on('message', (message) => {
+      console.log('New message:', message);
+    });
+
+    return () => {
+      vapi.removeAllListeners();
+    };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [interviewInfo]);
 
@@ -41,80 +68,57 @@ const StartInterviewPage = () => {
     if (!interviewInfo?.interviewData?.questionList) return;
     const questionList = interviewInfo.interviewData.questionList
       .map((item) => item.question)
-      .join(", ");
+      .join(', ');
 
     const assistantOptions = {
-      name: "AI Recruiter",
+      name: 'AI Recruiter',
       firstMessage: `Hi ${interviewInfo?.username}, how are you? Ready for your interview on ${interviewInfo?.interviewData?.rolePosition}?`,
       transcriber: {
-        provider: "deepgram",
-        model: "nova-2",
-        language: "en-US",
+        provider: 'deepgram',
+        model: 'nova-2',
+        language: 'en-US',
       },
       voice: {
-        provider: "playht",
-        voiceId: "jennifer",
+        provider: 'playht',
+        voiceId: 'jennifer',
       },
       model: {
-        provider: "openai",
-        model: "gpt-4",
+        provider: 'openai',
+        model: 'gpt-4',
         messages: [
           {
-            role: "system",
+            role: 'system',
             content: `
-      You are an AI voice assistant conducting interviews.
-      Your job is to ask candidates provided interview questions, assess their responses.
-      Begin the conversation with a friendly introduction, setting a relaxed yet professional tone.
-      "Hey there! Welcome to your ${interviewInfo?.interviewData?.rolePosition} interview. Let’s get started with a few questions."
-      
-      Ask one question at a time and wait for the candidate’s response before proceeding.
-      Questions: ${questionList}
-      
-      If the candidate struggles, offer hints or rephrase the question without giving away the answer.
-      "Need a hint? Think about how React tracks component updates!"
-      
-      Provide brief, encouraging feedback after each answer. Example:
-      "Nice! That’s a solid answer."
-      "Hmm, not quite! Want to try again?"
-      
-      Keep the conversation natural and engaging—use casual phrases like "Alright, next up..."
-      
-      After 5-7 questions, wrap up the interview smoothly by summarizing their performance:
-      "That was great! You handled some tough questions well. Keep sharpening your skills!"
-      
-      End on a positive note.
-      "Thanks for chatting! Hope to see you crushing projects soon!"
-              `,
+              You are an AI voice assistant conducting interviews.
+              Your job is to ask candidates provided interview questions, assess their responses.
+              Begin the conversation with a friendly introduction, setting a relaxed yet professional tone.
+              "Hey there! Welcome to your ${interviewInfo?.interviewData?.rolePosition} interview. Let’s get started with a few questions."
+              
+              Ask one question at a time and wait for the candidate’s response before proceeding.
+              Questions: ${questionList}
+              
+              If the candidate struggles, offer hints or rephrase the question without giving away the answer.
+              "Need a hint? Think about how React tracks component updates!"
+              
+              Provide brief, encouraging feedback after each answer. Example:
+              "Nice! That’s a solid answer."
+              "Hmm, not quite! Want to try again?"
+              
+              Keep the conversation natural and engaging—use casual phrases like "Alright, next up..."
+              
+              After 5-7 questions, wrap up the interview smoothly by summarizing their performance:
+              "That was great! You handled some tough questions well. Keep sharpening your skills!"
+              
+              End on a positive note.
+              "Thanks for chatting! Hope to see you crushing projects soon!"
+            `,
           },
         ],
       },
     };
-    
-    // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
     vapi.start(assistantOptions);
   };
-
-  vapi.on('call-start', () => {
-    console.log('Call has started...');
-    toast('Interview connected...');
-  });
-  vapi.on('speech-start', () => {
-    console.log('Assistant speech has started');
-    setActiveUser(false);
-  });
-  vapi.on('speech-end', () => {
-    console.log('Assistant speech has ended');
-    setActiveUser(true);
-  });
-  vapi.on('call-end', () => {
-    console.log('Call has ended...');
-    toast('Interview ended...');
-  });
-
-  vapi.on('message', (message) => {
-    console.log('New message:', message);
-  });
 
   return (
     <div className="p-20 pb-0">
