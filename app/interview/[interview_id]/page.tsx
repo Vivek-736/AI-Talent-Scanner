@@ -136,7 +136,7 @@ const InterviewPage = () => {
                                 </ul>
                             </div>
                         </div>
-                        <Button disabled={loading || !username} className='cursor-pointer bg-gradient-to-t mt-5 font-bold text-white w-full from-purple-700 to-purple-800 hover:from-purple-900 hover:to-purple-950' onClick={() => onJoinInterview()}>
+                        <Button disabled={loading || !username || !email} className='cursor-pointer bg-gradient-to-t mt-5 font-bold text-white w-full from-purple-700 to-purple-800 hover:from-purple-900 hover:to-purple-950' onClick={() => onJoinInterview()}>
                             <Video className='font-bold' /> Join Interview
                         </Button>
                     </div>
