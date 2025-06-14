@@ -6,7 +6,6 @@ import {
   LayoutDashboard,
   List,
   Puzzle,
-  Settings,
   User2Icon,
   WalletCards,
 } from "lucide-react";
@@ -28,14 +27,9 @@ export const SidebarOptions = [
     path: "/all-interviews",
   },
   {
-    name: "Billing",
+    name: "Account Billing",
     icon: WalletCards,
     path: "/billing",
-  },
-  {
-    name: "Settings",
-    icon: Settings,
-    path: "/settings",
   },
 ];
 

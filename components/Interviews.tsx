@@ -5,14 +5,15 @@ import Link from 'next/link';
 import dayjs from 'dayjs';
 import { useUser } from '@/app/Provider';
 import { supabase } from '@/services/supabaseClient';
+import { FaFacebook } from "react-icons/fa";
 import {
   FcGoogle,
   FcLinux,
   FcAndroidOs,
   FcReddit,
-  FcGlobe,
   FcCommandLine,
 } from 'react-icons/fc';
+import { BsGithub } from 'react-icons/bs'
 import { IconType } from 'react-icons';
 import { Camera } from 'lucide-react';
 import { toast } from 'sonner';
@@ -32,8 +33,9 @@ const techIcons: IconType[] = [
   FcLinux,
   FcAndroidOs,
   FcReddit,
-  FcGlobe,
   FcCommandLine,
+  BsGithub,
+  FaFacebook
 ];
 
 const getRandomIcon = (): IconType => {
@@ -66,7 +68,7 @@ const Interviews: React.FC = () => {
 
   return (
     <div className="my-6">
-      <h2 className="text-2xl font-bold mb-6">Recently Created Interviews</h2>
+      <h2 className="text-2xl font-bold mb-6">Created Interviews</h2>
 
       {interviews.length === 0 ? (
         <div className="flex flex-col items-center justify-center">
