@@ -91,10 +91,10 @@ Return your response in the following JSON format:
 {
   feedback: {
     rating: {
-      technicalSkills: 5,
-      communication: 6,
-      problemSolving: 4,
-      experience: 7
+      technicalSkills: '<rate out of 10>',
+      communication: '<rate out of 10>',
+      problemSolving: '<rate out of 10>',
+      experience: '<rate out of 10>'
     },
     summary: "<3-line summary>",
     recommendation: "",
