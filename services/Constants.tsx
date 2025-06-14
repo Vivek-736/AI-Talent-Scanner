@@ -81,7 +81,7 @@ type:Technical/Behavioral/Experince/ProbIem Solving/Leadership'
 },{
 ...
 }]
-The goal is to create a structured, relevant, and time-optimized interview plan for a {OobT1tle}} role.`;
+The goal is to create a structured, relevant, and time-optimized interview plan for a {roleTitle} role.`;
 
 export const FEEDBACK = `{{conversation}}
 Based on the above interview conversation between the assistant and the user, provide feedback for the candidate's interview performance.  
@@ -89,15 +89,15 @@ Rate the candidate out of 10 for Technical Skills, Communication, Problem Solvin
 Provide a concise 3-line summary of the interview, and include a one-line statement indicating whether the candidate is recommended for hire, along with a brief message.  
 Return your response in the following JSON format:  
 {
-  feedback: {
-    rating: {
-      technicalSkills: '<rate out of 10>',
-      communication: '<rate out of 10>',
-      problemSolving: '<rate out of 10>',
-      experience: '<rate out of 10>'
+  'feedback': {
+    'rating': {
+      'technicalSkills': '<rate out of 10>',
+      'communication': '<rate out of 10>',
+      'problemSolving': '<rate out of 10>',
+      'experience': '<rate out of 10>'
     },
-    summary: "<3-line summary>",
-    recommendation: "",
-    recommendationMsg: ""
+    'summary': '<3-line summary>',
+    'recommendation': '',
+    'recommendationMsg': ''
   }
 }`;

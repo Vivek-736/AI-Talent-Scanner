@@ -3,16 +3,20 @@
 import React, { useContext, useEffect, useRef, useState } from "react";
 import { InterviewDataContext } from "@/context/InterviewDataContext";
 import Image from "next/image";
-import { Mic, Phone } from "lucide-react";
+import { Loader2, Mic, Phone } from "lucide-react";
 import AlertConfirmation from "@/components/AlertConfirmation";
 import { toast } from "sonner";
 import { useVapi } from "@/context/VapiContext";
 import axios from "axios";
+import { supabase } from "@/services/supabaseClient";
+import { useRouter } from "next/navigation";
 
+/* eslint-disable @typescript-eslint/no-unused-vars */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 interface InterviewInfo {
   username: string;
+  email: string;
   interviewData: {
     questionList: { question: string }[];
     rolePosition: string;
@@ -33,6 +37,8 @@ const StartInterviewPage = () => {
   const [activeUser, setActiveUser] = useState(false);
   const [conversation, setConversation] = useState<any[]>([]);
   const conversationRef = useRef<any[]>([]);
+  const [loading, setLoading] = useState(false);
+  const router = useRouter();
 
   useEffect(() => {
     if (interviewInfo) {
@@ -81,10 +87,12 @@ const StartInterviewPage = () => {
         console.warn("Received undefined conversation from vapi.on(message)");
       }
     });
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [vapi]);
 
   const GenerateFeedback = async () => {
     try {
+      setLoading(true);
       const result = await axios.post("/api/ai-feedback", {
         conversation: conversationRef.current,
       });
@@ -96,15 +104,45 @@ const StartInterviewPage = () => {
       }
 
       const content = result?.data?.content;
-      const final_content = content
+      let final_content = content
         ?.replace(/```json\n|```/g, "")
         ?.replace(/\n/g, "")
         ?.trim();
 
-      console.log("Final feedback:", final_content);
+      final_content = final_content.replace(/'(?=(?:(?:[^"\\]*(?:\\.[^"\\]*)*")|[^"])*?(?::\s*|[}\],]))([^'\\]*(?:\\.[^'\\]*)*)'/g, '"$1"');
+
+      console.log("Raw content:", content);
+      console.log("Final feedback:", final_content); 
+
+      let parsedFeedback;
+      try {
+        parsedFeedback = JSON.parse(final_content);
+      } catch (parseError) {
+        console.error("JSON Parsing Error:", parseError);
+        console.error("Problematic JSON string:", final_content);
+        throw new Error("Failed to parse feedback JSON.");
+      }
+
+      const { data } = await supabase
+        .from('interview-feedback')
+        .insert([
+          {
+            username: interviewInfo?.username,
+            email: interviewInfo?.email,
+            interview_id: interviewInfo?.interviewData?.interview_id,
+            feedback: parsedFeedback,
+            recommended: false
+          }
+        ])
+        .select()
+
+      console.log("Feedback saved:", data);
+      router.replace(`/interview/${interviewInfo?.interviewData?.interview_id}/end`);
     } catch (error) {
       console.error("Error generating feedback:", error);
       toast.error("Failed to generate feedback.");
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -170,7 +208,7 @@ const StartInterviewPage = () => {
               alt="AI Image"
               width={90}
               height={90}
-              className="w-[90px] h-[90px] rounded-full border-sky-600 border-2"
+              className="w-[90px]-uk h-[90px] rounded-full border-sky-600 border-2"
             />
           </div>
           <p className="font-medium text-2xl">AI Agent</p>
@@ -195,7 +233,7 @@ const StartInterviewPage = () => {
           stopInterview={() => vapi.stop()}
           interviewId={interviewInfo?.interviewData?.interview_id ?? ""}
         >
-          <Phone className="h-12 w-12 p-3 text-white bg-rose-600 hover:bg-rose-800 rounded-full cursor-pointer" />
+          {!loading ?<Phone className="h-12 w-12 p-3 text-white bg-rose-600 hover:bg-rose-800 rounded-full cursor-pointer" />: <Loader2 className="h-12 w-12 text-black animate-spin" />}
         </AlertConfirmation>
       </div>
     </div>

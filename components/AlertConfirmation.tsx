@@ -52,7 +52,7 @@ const AlertConfirmation = ({
       });
 
       setOpen(false);
-      router.push(`/interview/${interviewId}`);
+      router.push(`/interview/${interviewId}/end`);
     } catch (error) {
       console.error('Failed to stop interview:', error);
       setIsCallStopping(false);
