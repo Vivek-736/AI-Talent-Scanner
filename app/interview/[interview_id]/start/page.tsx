@@ -140,7 +140,7 @@ const StartInterviewPage = () => {
       router.replace(`/interview/${interviewInfo?.interviewData?.interview_id}/end`);
     } catch (error) {
       console.error("Error generating feedback:", error);
-      toast.error("Failed to generate feedback.");
+      // toast.error("Failed to generate feedback.");
     } finally {
       setLoading(false);
     }
