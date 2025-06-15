@@ -1,10 +1,10 @@
-'use client';
+"use client";
 
-import React, { useEffect, useState } from 'react';
-import Link from 'next/link';
-import dayjs from 'dayjs';
-import { useUser } from '@/app/Provider';
-import { supabase } from '@/services/supabaseClient';
+import React, { useEffect, useState } from "react";
+import Link from "next/link";
+import dayjs from "dayjs";
+import { useUser } from "@/app/Provider";
+import { supabase } from "@/services/supabaseClient";
 import { FaFacebook } from "react-icons/fa";
 import {
   FcGoogle,
@@ -12,11 +12,12 @@ import {
   FcAndroidOs,
   FcReddit,
   FcCommandLine,
-} from 'react-icons/fc';
-import { BsGithub } from 'react-icons/bs'
-import { IconType } from 'react-icons';
-import { Camera } from 'lucide-react';
-import { toast } from 'sonner';
+} from "react-icons/fc";
+import { BsGithub } from "react-icons/bs";
+import { IconType } from "react-icons";
+import { Camera } from "lucide-react";
+import { toast } from "sonner";
+import SendButton from "./SendButton";
 
 interface Interview {
   id: number;
@@ -35,7 +36,7 @@ const techIcons: IconType[] = [
   FcReddit,
   FcCommandLine,
   BsGithub,
-  FaFacebook
+  FaFacebook,
 ];
 
 const getRandomIcon = (): IconType => {
@@ -60,9 +61,9 @@ const Interviews: React.FC = () => {
 
   const fetchInterviews = async () => {
     const { data } = await supabase
-      .from('Interviews')
-      .select('*')
-      .eq('userEmail', user?.email);
+      .from("Interviews")
+      .select("*")
+      .eq("userEmail", user?.email);
     if (data) setInterviews(data);
   };
 
@@ -94,7 +95,7 @@ const Interviews: React.FC = () => {
                 <div className="flex items-center justify-between mb-2">
                   <Icon size={28} />
                   <span className="text-sm text-gray-500">
-                    {dayjs(interview.created_at).format('DD MMM YYYY')}
+                    {dayjs(interview.created_at).format("DD MMM YYYY")}
                   </span>
                 </div>
                 <h3 className="text-lg font-semibold capitalize mb-1">
@@ -108,22 +109,19 @@ const Interviews: React.FC = () => {
                     className="flex-1 cursor-pointer border px-4 py-1 rounded-md text-sm font-medium hover:bg-gray-100"
                     onClick={() => {
                       navigator.clipboard.writeText(shareUrl);
-                      toast.success('Link copied to clipboard!');
+                      toast.success("Link copied to clipboard!");
                     }}
                   >
                     Copy Link
                   </button>
-                  <button
-                    className="flex-1 cursor-pointer bg-purple-600 text-white px-4 py-1 rounded-md text-sm font-medium hover:bg-purple-700"
+                  <SendButton
                     onClick={() => {
                       const message = encodeURIComponent(
                         `You are invited to participate in an AI interview. Start here: ${shareUrl}`
                       );
-                      window.open(`https://wa.me/?text=${message}`, '_blank');
+                      window.open(`https://wa.me/?text=${message}`, "_blank");
                     }}
-                  >
-                    Send
-                  </button>
+                  />
                 </div>
               </div>
             );
