@@ -1,5 +1,5 @@
 import React from 'react'
-import { SidebarProvider } from '@/components/ui/sidebar'
+import { SidebarProvider, SidebarTrigger } from '@/components/ui/sidebar'
 import { AppSidebar } from '@/components/AppSidebar'
 
 const DashboardProvider = ({ children }: { children: React.ReactNode }) => {
@@ -7,6 +7,7 @@ const DashboardProvider = ({ children }: { children: React.ReactNode }) => {
         <SidebarProvider>
             <AppSidebar />
             <div className='w-full'>
+            <SidebarTrigger className='md:hidden p-4' />
                 {children}
             </div>
         </SidebarProvider>
