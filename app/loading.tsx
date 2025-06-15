@@ -5,7 +5,7 @@ import styled from 'styled-components';
 
 export default function loading() {
   return (
-    <StyledWrapper>
+    <StyledWrapper className="min-h-screen flex justify-center items-center">
       <div className="loader">
         <div className="box box0">
           <div />
