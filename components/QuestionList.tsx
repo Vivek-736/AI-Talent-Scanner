@@ -9,6 +9,7 @@ import QuestionListContainer from './QuestionListContainer';
 import { supabase } from '@/services/supabaseClient';
 import { useUser } from '@/app/Provider';
 import { v4 as uuidv4 } from 'uuid';
+
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
 interface QuestionListProps {
@@ -34,7 +35,7 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
             const result = await axios.post('/api/ai-model', {
                 ...formData
             });
-            console.log('API Response:', result?.data);
+            // console.log('API Response:', result?.data);
             const content = result?.data?.content;
             if (!content || typeof content !== 'string') {
                 console.log('Invalid or missing content in API response');
@@ -54,6 +55,7 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
 
     const onFinish = async () => {
         const interview_id = uuidv4();
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
         const { data, error } = await supabase
             .from('Interviews')
             .insert([
@@ -65,7 +67,7 @@ const QuestionList = ({ formData, onCreateLink }: QuestionListProps) => {
                 }
             ])
             .select();
-        console.log(data, error);
+        // console.log(data, error);
 
         onCreateLink(interview_id, questionList.length);
     }

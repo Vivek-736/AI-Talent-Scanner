@@ -55,7 +55,7 @@ export default function HomePage() {
       provider: "google",
     });
     if (error) {
-      console.log("Error: ", error.message);
+      // console.log("Error: ", error.message);
     }
   };
 

@@ -33,7 +33,7 @@ const CreateInterviewPage = () => {
     }
 
     useEffect(() => {
-        console.log("FormData:", formData);
+        // console.log("FormData:", formData);
     }, [formData]);
 
     const onCreateLink = (interview_id: any, questionListLength: number) => {

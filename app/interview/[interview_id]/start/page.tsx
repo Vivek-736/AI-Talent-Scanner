@@ -80,7 +80,7 @@ const StartInterviewPage = () => {
 
     vapi.on("message", (message) => {
       if (message?.conversation) {
-        console.log("New message:", message.conversation);
+        // console.log("New message:", message.conversation);
         setConversation(message.conversation);
         conversationRef.current = message.conversation;
       } else {
@@ -111,8 +111,8 @@ const StartInterviewPage = () => {
 
       final_content = final_content.replace(/'(?=(?:(?:[^"\\]*(?:\\.[^"\\]*)*")|[^"])*?(?::\s*|[}\],]))([^'\\]*(?:\\.[^'\\]*)*)'/g, '"$1"');
 
-      console.log("Raw content:", content);
-      console.log("Final feedback:", final_content); 
+      // console.log("Raw content:", content);
+      // console.log("Final feedback:", final_content); 
 
       let parsedFeedback;
       try {
@@ -136,7 +136,7 @@ const StartInterviewPage = () => {
         ])
         .select()
 
-      console.log("Feedback saved:", data);
+      // console.log("Feedback saved:", data);
       router.replace(`/interview/${interviewInfo?.interviewData?.interview_id}/end`);
     } catch (error) {
       console.error("Error generating feedback:", error);

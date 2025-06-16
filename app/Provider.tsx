@@ -38,7 +38,7 @@ function Provider({ children }: { children: React.ReactNode }) {
         return;
       }
 
-      console.log("Fetched users:", users);
+      // console.log("Fetched users:", users);
 
       if (users?.length === 0) {
         const { data: newUser, error: insertError } = await supabase
@@ -58,7 +58,7 @@ function Provider({ children }: { children: React.ReactNode }) {
           return;
         }
 
-        console.log("Inserted new user:", newUser);
+        // console.log("Inserted new user:", newUser);
         setUser(newUser);
         return;
       }

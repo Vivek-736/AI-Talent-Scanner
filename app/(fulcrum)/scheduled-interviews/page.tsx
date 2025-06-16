@@ -93,7 +93,7 @@ const ScheduledInterviews: React.FC = () => {
       .eq("userEmail", user?.email)
       .order("id", { ascending: false });
 
-    console.log("Scheduled Interviews Data:", data);
+    // console.log("Scheduled Interviews Data:", data);
 
     // eslint-disable-next-line @typescript-eslint/ban-ts-comment
     // @ts-ignore
