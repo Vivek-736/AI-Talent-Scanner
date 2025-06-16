@@ -12,7 +12,7 @@ const SendButton = ({onClick}: SendButtonProps) => {
     }
   };
   return (
-    <StyledWrapper>
+    <StyledWrapper className='md:block hidden'>
       <button onClick={handleClick}>
         <div className="svg-wrapper-1">
           <div className="svg-wrapper">
@@ -32,9 +32,9 @@ const StyledWrapper = styled.div`
   button {
     font-family: inherit;
     font-size: 16px;
-    background: royalblue;
+    background: #9810fa;
     color: white;
-    padding: 0.7em 2em;
+    padding: 0.4em 2em;
     display: flex;
     align-items: center;
     border: none;
