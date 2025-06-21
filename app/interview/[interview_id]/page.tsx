@@ -110,7 +110,7 @@ const InterviewPage = () => {
                                 Enter your Full Name or ID:
                             </h2>
                             <Input 
-                                placeholder='E.g. 2300044444 or Ashraf Galib Shaik' 
+                                placeholder='E.g. 2300044444 or SnowGo Sweety' 
                                 className='w-full border-gray-300 focus:border-purple-600 focus:ring-purple-600 rounded-md py-3'
                                 onChange={(e: any) => setUsername(e.target.value)}
                             />
