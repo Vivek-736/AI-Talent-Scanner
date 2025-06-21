@@ -8,7 +8,7 @@ import { VapiProvider } from "@/context/VapiContext";
 const outfit = Outfit({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Talq - Your AI for hiring",
+  title: "Talq - AI to scan for best candidates",
   description:
     "An AI powered platform where you can create interviews and hire",
   icons: {
